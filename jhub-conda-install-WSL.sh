@@ -54,6 +54,11 @@ cd /opt/conda/envs/jupyterhub/etc/jupyterhub
 # set default to jupyterlab
 sed -i "s/#c\.Spawner\.default_url = ''/c\.Spawner\.default_url = '\/lab'/" jupyterhub_config.py
 
+# Set absolute path to singleuser notebook spawner (default locations is not working in WSL??)
+sed -i "s/#c\.Spawner\.cmd = \['jupyterhub-singleuser'\]/c\.Spawner\.cmd = '\/opt\/conda\/envs\/jupyterhub\/bin\/jupyterhub-singleuser'/" jupyterhub_config.py  
+
+# Set path to jupyterhub pid file
+sed -i "s/#c\.JupyterHub\.pid_file = ''/c\.JupyterHub\.pid_file = '\/var\/run\/jupyterhub\.pid'/" jupyterhub_config.py
 
 JHUB_HOME=/opt/conda/envs/jupyterhub
 JHUB_CONFIG=${JHUB_HOME}/etc/jupyterhub/jupyterhub_config.py
@@ -77,6 +82,7 @@ sed -i "s/#c\.JupyterHub\.ssl_key =.*/c\.JupyterHub\.ssl_key = '\/opt\/conda\/en
 #
 
 cp -a ${SCRIPT_HOME}/init-file/jupyterhub /etc/init.d/
+chown root:root /etc/init.d/jupyterhub
 
 # Insert links using the defaults:
 update-rc.d jupyterhub defaults
@@ -107,14 +113,14 @@ cp -a kernel-icons/tensorflow.png /usr/local/share/jupyter/kernels/tensorflow2.2
 cp -a kernel-icons/pytorch-logo-light.png /usr/local/share/jupyter/kernels/pytorch1.5-cpu/logo-64x64.png
 
 # TensorFlow 2.2 GPU
-/opt/conda/bin/conda create --yes --name tensorflow2-gpu tensorflow-gpu ipykernel
-/opt/conda/envs/tensorflow2.2-cpu/bin/python -m ipykernel install --name 'tensorflow2.2-gpu' --display-name "TensorFlow 2.2 GPU"
-cp -a kernel-icons/tensorflow.png /usr/local/share/jupyter/kernels/tensorflow2.2-gpu/logo-64x64.png
+#/opt/conda/bin/conda create --yes --name tensorflow2-gpu tensorflow-gpu ipykernel
+#/opt/conda/envs/tensorflow2.2-cpu/bin/python -m ipykernel install --name 'tensorflow2.2-gpu' --display-name "TensorFlow 2.2 GPU"
+#cp -a kernel-icons/tensorflow.png /usr/local/share/jupyter/kernels/tensorflow2.2-gpu/logo-64x64.png
 
 # PyTorch 1.5 GPU
-/opt/conda/bin/conda create --yes --name pytorch1.5-gpu ipykernel pytorch torchvision -c pytorch 
-/opt/conda/envs/pytorch1.5-gpu/bin/python -m ipykernel install --name 'pytorch1.5-gpu' --display-name "PyTorch 1.5 GPU"
-cp -a kernel-icons/pytorch-logo-light.png /usr/local/share/jupyter/kernels/pytorch1.5-gpu/logo-64x64.png
+#/opt/conda/bin/conda create --yes --name pytorch1.5-gpu ipykernel pytorch torchvision -c pytorch 
+#/opt/conda/envs/pytorch1.5-gpu/bin/python -m ipykernel install --name 'pytorch1.5-gpu' --display-name "PyTorch 1.5 GPU"
+#cp -a kernel-icons/pytorch-logo-light.png /usr/local/share/jupyter/kernels/pytorch1.5-gpu/logo-64x64.png
 
 
 #
